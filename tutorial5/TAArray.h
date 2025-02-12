@@ -11,14 +11,14 @@ class TAArray{
         TAArray();
         ~TAArray();
         //Adds a TextArea to the dynamic list
-        bool addTextArea(TextArea* TA);
-        bool addTextArea(TextArea* TA, int i);
+        bool add(TextArea* TA);
+        bool add(TextArea* TA, int i);
         //Retrives a TextArea from the dynamic list from a name or index
-        TextArea* getTextArea(int i) const;
-        TextArea* getTextArea(const string& name) const;
+        TextArea* get(int i) const;
+        TextArea* get(const string& name) const;
         //Removes and retrives a TextArea from the dynamic list from a name or index
-        TextArea* removeTextArea(int i);
-        TextArea* removeTextArea(const string& name);
+        TextArea* remove(int i);
+        TextArea* remove(const string& name);
         //Getters
         bool isFull() const{return size >= MAX_COMPONENTS;}
         int getSize() const{return size;}

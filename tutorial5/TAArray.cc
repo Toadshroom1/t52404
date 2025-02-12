@@ -2,18 +2,23 @@
 TAArray::TAArray(){
     size = 0;
     elements = new TextArea*[MAX_COMPONENTS];
+    for (int i = 0; i < MAX_COMPONENTS; i++) {
+        elements[i] = nullptr;
+    }
 }
 TAArray::~TAArray(){
     for (int i = 0; i < size; i++){
-        if (elements[i] != nullptr){
+        if (elements[i]){
             delete elements[i];
             elements[i] = nullptr;
         }
     }
-    delete [] elements;
-    elements = nullptr;
+    if(elements){
+        delete [] elements;
+        elements = nullptr;
+    }
 }
-bool TAArray::addTextArea(TextArea* TA){
+bool TAArray::add(TextArea* TA){
     if(isFull()) return false;
     for (int i = 0; i < size; i++){
         //if(TA->overlaps(*elements[i])) return false;
@@ -21,44 +26,42 @@ bool TAArray::addTextArea(TextArea* TA){
     elements[size++] = TA;
     return true;
 }
-bool TAArray::addTextArea(TextArea* TA, int index){
+bool TAArray::add(TextArea* TA, int index){
     if(isFull()) return false;
+    if(index < 0 || index > size) return false;
     for (int i = 0; i < size; i++){
         //if(TA->overlaps(*elements[i])) return false;
     }
-    TextArea* temp1 = TA;
-    TextArea* temp2;
-    for (int i = index; i < size; i++){
-        temp2 = elements[i];
-        elements[i] = temp1;
-        temp1 = temp2;
+    for (int i = size; i > index; i--) {
+        elements[i] = elements[i - 1];
     }
+    elements[index] = TA;
     size++;
     return true;
 }
-TextArea* TAArray::getTextArea(int i) const{
+TextArea* TAArray::get(int i) const{
     if(i < 0 || i >= size) return nullptr;
     return elements[i];
 }
-TextArea* TAArray::getTextArea(const string& id) const{
+TextArea* TAArray::get(const string& id) const{
     for(int i = 0; i < size; i++){
         if(*elements[i] == id) return elements[i];
     }
     return nullptr;
 }
-TextArea* TAArray::removeTextArea(int i){
+TextArea* TAArray::remove(int i){
     if(i < 0 || i >= size) return nullptr;
     TextArea* t = elements[i];
     while (i < size - 1){
         elements[i] = elements[i + 1];
         ++i;
     }
-    --size;
+    elements[--size] = nullptr;
     return t;
 }
-TextArea* TAArray::removeTextArea(const string& id){
+TextArea* TAArray::remove(const string& id){
     for(int i = 0; i < size; i++){
-        if(*elements[i] == id) return removeTextArea(i);
+        if(*elements[i] == id) return remove(i);
     }
     return nullptr;
 }
@@ -74,7 +77,7 @@ TAArray TAArray::getFlowingTextAreas(int width, int height, int marginX, int mar
             rowHeight = 0;
         }
         else if(flowY + elements[i]->getDim().y > height - marginY) break;
-        FlowingTextAreas.addTextArea(new TextArea(*elements[i], flowX, flowY));
+        FlowingTextAreas.add(new TextArea(*elements[i], flowX, flowY));
         flowX += elements[i]->getDim().width + marginX;
         rowHeight = max(rowHeight, elements[i]->getDim().height);
     }
@@ -82,6 +85,6 @@ TAArray TAArray::getFlowingTextAreas(int width, int height, int marginX, int mar
 }
 void TAArray::print() const{
     for(int i = 0; i < size; i++){
-        elements[i]->print();
+        if(elements[i]) elements[i]->print();
     }
 }
