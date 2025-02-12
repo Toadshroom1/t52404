@@ -3,7 +3,10 @@
 #define MAX_COMPONENTS 256
 
 #define CuColour unsigned long
-
+#include <iostream>
+#include <iomanip>
+#include <X11/Xlib.h>
+using namespace std;
 
 struct Rectangle{
     int x;
